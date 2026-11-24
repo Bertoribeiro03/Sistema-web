@@ -29,8 +29,12 @@ export async function readAccount(key) {
     return row ? { revision: row.revision, account: JSON.parse(row.body) } : null
   }
   const { get } = await import('@vercel/blob')
-  const result = await get(blobPath(key), { access: 'private', useCache: false })
+  // A representação comprimida recebe um ETag fraco, incompatível com a gravação condicional.
+  const result = await get(blobPath(key), {
+    access: 'private', useCache: false, headers: { 'Accept-Encoding': 'identity' },
+  })
   if (!result) return null
+  if (!result.blob.etag || result.blob.etag.startsWith('W/')) throw new Error('O armazenamento não confirmou a versão do registro.')
   return { revision: result.blob.etag, account: await new Response(result.stream).json() }
 }
 

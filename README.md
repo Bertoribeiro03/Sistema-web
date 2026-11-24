@@ -2,6 +2,8 @@
 
 Sistema de gestão de consultas para consultórios odontológicos. A recepção pode organizar a agenda, cadastrar pacientes, dentistas e funcionários, manter o catálogo de procedimentos e acompanhar os atendimentos do dia.
 
+[Acessar o Átrio Odonto](https://atrio-consultas.vercel.app/)
+
 ## Executar no computador
 
 Instale o Node.js 24.x com npm. Na pasta que contém o arquivo `package.json`, execute os comandos abaixo.
@@ -40,7 +42,7 @@ npm run build
 npm run preview
 ```
 
-Os testes usam uma API HTTP real e um SQLite temporário. Cobrem autenticação, isolamento entre contas, cadastros, edição concorrente, agendamento, cancelamento, exclusão e persistência após reiniciar o servidor. O comando de pré-visualização serve o conteúdo de `dist/` e a API no [endereço local de produção](http://localhost:4173).
+Os testes usam uma API HTTP real e um SQLite temporário. Cobrem autenticação, isolamento entre contas, cadastros, edição concorrente, agendamento, cancelamento, exclusão e persistência após reiniciar o servidor. Um teste adicional simula o armazenamento privado da Vercel para verificar o identificador de versão usado nas gravações. O comando de pré-visualização serve o conteúdo de `dist/` e a API no [endereço local de produção](http://localhost:4173).
 
 ## Publicar na Vercel
 
