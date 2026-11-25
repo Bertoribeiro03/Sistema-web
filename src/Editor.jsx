@@ -26,16 +26,6 @@ export default function Editor({ modal, data, open, close, save, busy, addMissin
     try { await save(resource, kind === 'remove' ? 'DELETE' : item ? 'PUT' : 'POST', values, item?.id) }
     catch (err) { setError(err.message) }
   }
-  if (kind === 'samples') return <Modal title="Adicionar cadastros de exemplo" close={close} busy={busy} icon={FileText}>
-    <form onSubmit={submit}>
-      <p>Acrescente 15 dentistas, 90 pacientes e 15 funcionários fictícios aos cadastros deste consultório.</p>
-      {error && <p role="alert" className="error">{error}</p>}
-      <div className="form-actions">
-        <button className="btn secondary" type="button" disabled={busy} onClick={close}>Voltar</button>
-        <button className="btn primary" disabled={busy}>{busy ? 'Adicionando…' : 'Adicionar 120 cadastros'}</button>
-      </div>
-    </form>
-  </Modal>
   const links = isAppointment && item ? choices.map(([key, name, group]) => [name, data[group].find(x => x.id === item[key])?.name || '—']) : []
   const details = kind === 'detail' && (isAppointment
     ? [...links, ['Data', prettyDate(item.date)], ['Horário', item.time], ['Duração', item.duration + ' min'], ['Status', item.status]]

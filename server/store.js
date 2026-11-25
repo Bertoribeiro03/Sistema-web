@@ -1,4 +1,4 @@
-import { AppError } from './domain.js'
+import { AppError } from '../shared/domain.js'
 
 // Leitura consistente e gravação condicional nos dois ambientes.
 function storageMode() {

@@ -4,6 +4,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "regions": ["gru1"],
+  "rewrites": [{ "source": "/exemplo", "destination": "/index.html" }],
   "headers": [
     {
       "source": "/(.*)",

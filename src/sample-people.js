@@ -1,4 +1,4 @@
-import { AppError, changeRecord } from './domain.js'
+import { initialData, changeRecord } from '../shared/domain.js'
 
 const givenNames = [
   'Alice', 'André', 'Beatriz', 'Bruno', 'Camila', 'Caio', 'Carolina', 'Daniel', 'Débora', 'Diogo',
@@ -32,18 +32,11 @@ function makeSamples() {
   }
 }
 
-export function importSamplePeople(account) {
-  if (account.samplePeopleImported) return
+export function createExampleData() {
+  const data = initialData()
   const samples = makeSamples()
   for (const [group, rows] of Object.entries(samples)) {
-    const key = group === 'doctors' ? 'credential' : 'email'
-    const existing = new Set(account.data[group].map(row => row[key]))
-    if (rows.some(row => existing.has(row[key]))) {
-      throw new AppError(409, 'Um CRO ou e-mail do lote de exemplo já está cadastrado. Confira os registros deste consultório.')
-    }
+    for (const row of rows) changeRecord(data, group, 'POST', null, row)
   }
-  for (const [group, rows] of Object.entries(samples)) {
-    for (const row of rows) changeRecord(account.data, group, 'POST', null, row)
-  }
-  account.samplePeopleImported = true
+  return data
 }

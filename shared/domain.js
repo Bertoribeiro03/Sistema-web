@@ -1,5 +1,3 @@
-import { randomUUID } from 'node:crypto'
-
 export class AppError extends Error {
   constructor(status, message) {
     super(message)
@@ -45,7 +43,7 @@ export function initialData() {
     procedures: [
       ['Avaliação odontológica', 30], ['Profilaxia', 45], ['Restauração', 60],
       ['Manutenção ortodôntica', 30], ['Retorno odontológico', 20],
-    ].map(([name, duration]) => ({ id: randomUUID(), version: 1, name, duration })),
+    ].map(([name, duration]) => ({ id: crypto.randomUUID(), version: 1, name, duration })),
   }
 }
 
@@ -126,7 +124,7 @@ export function changeRecord(data, resource, method, id, input) {
     list.splice(index, 1)
   } else {
     const fields = record(data, resource, input, current)
-    if (method === 'POST') list.push({ id: randomUUID(), version: 1, ...fields })
+    if (method === 'POST') list.push({ id: crypto.randomUUID(), version: 1, ...fields })
     else list[index] = { id, version: current.version + 1, ...fields }
   }
 }

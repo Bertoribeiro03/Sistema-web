@@ -4,6 +4,8 @@ Sistema de gestão de consultas para consultórios odontológicos. A recepção 
 
 [Acessar o Átrio Odonto](https://atrio-consultas.vercel.app/)
 
+O [consultório de exemplo](https://atrio-consultas.vercel.app/exemplo) abre com **15 dentistas, 90 pacientes e 15 funcionários fictícios**. É possível consultar, editar e agendar. Cada navegador mantém sua própria cópia no IndexedDB. O primeiro acesso em outro navegador começa com os mesmos 120 cadastros.
+
 ## Executar no computador
 
 Instale o Node.js 24.x com npm. Na pasta que contém o arquivo `package.json`, execute os comandos abaixo.
@@ -26,8 +28,6 @@ A configuração padrão funciona sem credenciais. Para mudar o diretório do ba
 5. Use **Editar consulta** para remarcar ou alterar o status entre agendada, confirmada, concluída e cancelada. O painel apresenta os totais do dia, a distribuição por status e os próximos horários.
 
 As áreas **Pacientes**, **Dentistas**, **Funcionários** e **Procedimentos** permitem criar, consultar, editar e excluir registros. O cadastro de funcionário registra os dados da equipe. Cada conta de acesso tem sua própria agenda e sua própria equipe cadastrada.
-
-Para explorar o sistema com dados fictícios, no **Painel** clique em **Adicionar cadastros de exemplo** e confirme **Adicionar 120 cadastros**. Cada consultório pode importar o lote uma vez. Ele acrescenta 15 dentistas, 90 pacientes e 15 funcionários.
 
 ### Regras da agenda
 

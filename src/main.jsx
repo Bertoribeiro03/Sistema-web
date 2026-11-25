@@ -17,6 +17,8 @@ const pages = [
   ['employees', 'Funcionários', 'funcionarios', ContactRound], ['procedures', 'Procedimentos', 'procedimentos', ClipboardList],
 ]
 const pageFromUrl = () => pages.find(p => '#/' + p[2] === location.hash)?.[0] || 'dashboard'
+const exampleMode = /^\/exemplo\/?$/.test(location.pathname)
+const clinicApi = exampleMode ? (...args) => import('./example').then(m => m.exampleApi(...args)) : api
 
 function App() {
   const [model, setModel] = useState(null)
@@ -43,7 +45,7 @@ function App() {
     if (initial) setPhase('loading')
     setRefreshing(true)
     try {
-      const state = await api()
+      const state = await clinicApi()
       if (request === sequence.current) { setModel(state); setPhase('ready'); setAlert('') }
     } catch (err) {
       if (request !== sequence.current) return
@@ -84,23 +86,24 @@ function App() {
     if (writing.current) return
     writing.current = true; sequence.current++; setBusy(true); setRefreshing(false)
     try {
-      const updated = await api(resource, method, fields, id)
+      const updated = await clinicApi(resource, method, fields, id)
       setModel(updated); setAlert('')
       if (modal.resume) {
         const key = { doctors: 'doctorId', patients: 'patientId', procedures: 'procedureId' }[resource]
         const added = updated.data[resource].find(x => !model.data[resource].some(old => old.id === x.id))
         open('edit', 'appointments', null, { ...modal.resume, [key]: added?.id })
       } else close()
-      setNotice(resource === 'sample-people' ? 'Os cadastros de exemplo estão disponíveis.' : method === 'DELETE' ? 'Registro excluído.' : resource === 'appointments' ? 'Consulta salva na agenda.' : 'Cadastro salvo.')
+      setNotice(method === 'DELETE' ? 'Registro excluído.' : resource === 'appointments' ? 'Consulta salva na agenda.' : 'Cadastro salvo.')
     } catch (err) {
       if (err.status === 401) signedOut('Sua sessão terminou. Entre novamente.')
       else if (err.status === 409 || err.status === 404) {
-        try { setModel(await api()) } catch { /* A mensagem da operação permanece no formulário. */ }
+        try { setModel(await clinicApi()) } catch { /* A mensagem da operação permanece no formulário. */ }
       }
       throw err
     } finally { writing.current = false; setBusy(false) }
   }
   async function logout() {
+    if (exampleMode) { location.assign('/'); return }
     if (writing.current) return
     writing.current = true; sequence.current++; setBusy(true)
     try {
@@ -124,11 +127,12 @@ function App() {
         <a href={'#/' + slug} aria-current={page === id ? 'page' : undefined} onClick={e => { e.preventDefault(); navigate(id) }}><Icon size={19} strokeWidth={1.7}/>{label}</a>
       </div>)}</nav>
       <div className="account"><span className="avatar">{initials(model.user.name)}</span><div><strong>{model.user.name}</strong><small>{model.user.email}</small></div></div>
-      <button className="logout" disabled={busy} onClick={logout}><LogOut size={17}/>Sair da conta</button>
+      <button className="logout" disabled={busy} onClick={logout}><LogOut size={17}/>{exampleMode ? 'Sair do exemplo' : 'Sair da conta'}</button>
     </aside>
     <div className="main-area"><div className="topbar"><button className="menu-toggle" aria-expanded={menu} aria-controls="sidebar" aria-label="Abrir menu" onClick={() => setMenu(true)}><Menu size={22}/></button><span className="breadcrumbs">Consultório <i>/</i> <strong>{title}</strong></span>
       <div className="top-tools"><span><CalendarDays size={15}/>{prettyDate(nowInClinic().date, { day: 'numeric', month: 'short', year: 'numeric' })}</span><IconButton label="Atualizar dados" icon={RefreshCw} disabled={refreshing || busy} onClick={() => refresh()}/></div></div>
       <main className="content" id="main-content" tabIndex="-1">
+        {exampleMode && <p className="example-info">Consultório de exemplo · Os cadastros são fictícios. Suas alterações ficam neste navegador.</p>}
         {alert && <p className="error" role="alert">{alert}</p>}
         {page === 'dashboard' ? <Dashboard model={model} open={open} navigate={navigate} agendaToday={s => navigate('appointments', {date: nowInClinic().date, status: s})}/> :
           page === 'appointments' ? <Schedule key={JSON.stringify(filter)} data={model.data} open={open} initialFilter={filter}/> :

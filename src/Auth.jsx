@@ -35,6 +35,7 @@ export default function Auth({ onEntry, initialError = '' }) {
           {error && <p className="error" role="alert">{error}</p>}
           <button className="btn primary auth-submit" disabled={busy}>{busy && <LoaderCircle className="spin" size={17}/>} {create ? 'Criar conta e entrar' : 'Entrar no consultório'}</button>
         </form>
+        <a className="example-link" href="/exemplo">Abrir consultório de exemplo</a>
       </section>
     </div>
     <aside className="auth-art" aria-label="Sala de espera de um consultório odontológico"><img src="/consultorio.webp" alt="Sala de espera com banco de madeira e luz natural."/></aside>
