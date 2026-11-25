@@ -1,6 +1,7 @@
 import { AppError, changeRecord, collections } from '../server/domain.js'
 import { signup, login, readSession, verifySession, publicState, clearCookie } from '../server/auth.js'
 import { readAccount, mutateAccount } from '../server/store.js'
+import { importSamplePeople } from '../server/sample-people.js'
 
 async function inputFrom(req) {
   if (!(req.headers['content-type'] || '').startsWith('application/json')) throw new AppError(415, 'Envie os dados em JSON.')
@@ -55,13 +56,15 @@ export default async function handler(req, res) {
       verifySession(account, session.digest)
       return res.end(JSON.stringify(publicState(account)))
     }
-    if (!collections.includes(resource) || method === 'GET') throw new AppError(404, 'Operação não encontrada.')
+    const importingSamples = resource === 'sample-people' && method === 'POST'
+    if (!importingSamples && (!collections.includes(resource) || method === 'GET')) throw new AppError(404, 'Operação não encontrada.')
     const state = await mutateAccount(session.key, account => {
       verifySession(account, session.digest)
-      changeRecord(account.data, resource, method, params.get('id'), input)
+      if (importingSamples) importSamplePeople(account)
+      else changeRecord(account.data, resource, method, params.get('id'), input)
       return publicState(account)
     })
-    res.statusCode = method === 'POST' ? 201 : 200
+    res.statusCode = method === 'POST' && !importingSamples ? 201 : 200
     res.end(JSON.stringify(state))
   } catch (error) {
     res.statusCode = error instanceof AppError ? error.status : 503

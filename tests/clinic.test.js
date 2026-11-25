@@ -119,4 +119,22 @@ test('Fluxos da API do consultório', async t => {
     assert.equal((await request('state')).status, 401)
     assert.equal((await request('logout', 'POST', {})).status, 401)
   })
+  await t.test('carga de 120 pessoas por conta, com preservação de cadastros e proteção contra repetição', async () => {
+    assert.equal((await request('sample-people', 'POST', {})).status, 401)
+    const fresh = await request('signup', 'POST', { ...identity, email: randomUUID() + '@example.invalid' })
+    cookie = fresh.cookie
+    const existing = await add('patients', { name: 'Paciente anterior', birthDate: '1990-05-02' })
+    const imports = await Promise.all([request('sample-people', 'POST', {}), request('sample-people', 'POST', {})])
+    assert.ok(imports.every(r => r.status === 200 && r.body.samplePeopleImported))
+    const { data } = (await request('state')).body
+    assert.deepEqual([data.doctors.length, data.patients.length, data.employees.length], [15, 91, 15])
+    assert.deepEqual(data.patients.find(row => row.id === existing.id), existing)
+    assert.equal(new Set([...data.doctors, ...data.patients, ...data.employees].map(row => row.name)).size, 121)
+    const imported = data.patients.find(row => row.id !== existing.id)
+    await remove('patients', imported)
+    assert.equal((await request('sample-people', 'POST', {})).body.data.patients.length, 90)
+    const other = await request('login', 'POST', identity)
+    assert.equal(other.body.data.patients.length, 0)
+    assert.equal(other.body.samplePeopleImported, false)
+  })
 })

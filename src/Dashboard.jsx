@@ -33,5 +33,6 @@ export default function Dashboard({ model, open, navigate, agendaToday }) {
     <section className="quick-panel"><div><h2>Cadastros rápidos</h2><p>Adicione quem será atendido ou quem fará parte da equipe.</p></div>
       <div><button className="btn secondary" onClick={() => open('edit', 'patients')}><UserRound size={16}/>Novo paciente</button><button className="btn secondary" onClick={() => open('edit', 'doctors')}><Stethoscope size={16}/>Novo dentista</button></div>
     </section>
+    {!model.samplePeopleImported && <button className="plain" onClick={() => open('samples', 'sample-people')}>Adicionar cadastros de exemplo</button>}
   </>
 }

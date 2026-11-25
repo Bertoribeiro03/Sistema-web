@@ -27,6 +27,8 @@ A configuração padrão funciona sem credenciais. Para mudar o diretório do ba
 
 As áreas **Pacientes**, **Dentistas**, **Funcionários** e **Procedimentos** permitem criar, consultar, editar e excluir registros. O cadastro de funcionário registra os dados da equipe. Cada conta de acesso tem sua própria agenda e sua própria equipe cadastrada.
 
+Para explorar o sistema com dados fictícios, no **Painel** clique em **Adicionar cadastros de exemplo** e confirme **Adicionar 120 cadastros**. Cada consultório pode importar o lote uma vez. Ele acrescenta 15 dentistas, 90 pacientes e 15 funcionários.
+
 ### Regras da agenda
 
 - As datas e horas do consultório seguem o fuso de São Paulo.

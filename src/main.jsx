@@ -91,7 +91,7 @@ function App() {
         const added = updated.data[resource].find(x => !model.data[resource].some(old => old.id === x.id))
         open('edit', 'appointments', null, { ...modal.resume, [key]: added?.id })
       } else close()
-      setNotice(method === 'DELETE' ? 'Registro excluído.' : resource === 'appointments' ? 'Consulta salva na agenda.' : 'Cadastro salvo.')
+      setNotice(resource === 'sample-people' ? 'Os cadastros de exemplo estão disponíveis.' : method === 'DELETE' ? 'Registro excluído.' : resource === 'appointments' ? 'Consulta salva na agenda.' : 'Cadastro salvo.')
     } catch (err) {
       if (err.status === 401) signedOut('Sua sessão terminou. Entre novamente.')
       else if (err.status === 409 || err.status === 404) {

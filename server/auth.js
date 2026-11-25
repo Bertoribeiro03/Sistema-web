@@ -30,7 +30,7 @@ export function readSession(req) {
 export function verifySession(account, digest) {
   if (!account?.sessions.some(s => s.digest === digest && s.until > Date.now())) throw new AppError(401, 'Sua sessão terminou. Entre novamente.')
 }
-export const publicState = account => ({ user: account.profile, data: account.data })
+export const publicState = account => ({ user: account.profile, data: account.data, samplePeopleImported: account.samplePeopleImported === true })
 const makeHash = (value, salt) => derive(value, salt, 64, { N: 65536, r: 8, p: 2, maxmem: 128 * 1024 * 1024 })
 
 export async function signup(input) {
